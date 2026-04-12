@@ -1,0 +1,11 @@
+{
+    ".url": {
+        "com.dustinky.qwenpaw": {
+            "title": "QwenPaw",
+            "icon": "images/icon_{0}.png",
+            "type": "iframe",
+            "protocol": "http",
+            "port": "19091"
+        }
+    }
+}

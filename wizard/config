@@ -1,0 +1,77 @@
+[
+    {
+        "stepTitle": "QwenPaw 配置",
+        "items": [
+            {
+                "type": "tips",
+                "helpText": "修改 QwenPaw 的运行配置。注意：修改配置后需要重启应用才能生效。"
+            }
+        ]
+    },
+    {
+        "stepTitle": "日志级别",
+        "items": [
+            {
+                "type": "select",
+                "field": "wizard_log_level",
+                "label": "日志级别",
+                "initValue": "info",
+                "options": [
+                    {
+                        "label": "Info - 常规信息",
+                        "value": "info"
+                    },
+                    {
+                        "label": "Debug - 调试信息",
+                        "value": "debug"
+                    },
+                    {
+                        "label": "Warning - 警告信息",
+                        "value": "warning"
+                    },
+                    {
+                        "label": "Error - 错误信息",
+                        "value": "error"
+                    }
+                ],
+                "rules": [
+                    {
+                        "required": true,
+                        "message": "请选择日志级别"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "stepTitle": "工作进程数",
+        "items": [
+            {
+                "type": "select",
+                "field": "wizard_workers",
+                "label": "工作进程数",
+                "initValue": "4",
+                "options": [
+                    {
+                        "label": "2 个进程",
+                        "value": "2"
+                    },
+                    {
+                        "label": "4 个进程",
+                        "value": "4"
+                    },
+                    {
+                        "label": "8 个进程",
+                        "value": "8"
+                    }
+                ],
+                "rules": [
+                    {
+                        "required": true,
+                        "message": "请选择工作进程数"
+                    }
+                ]
+            }
+        ]
+    }
+]

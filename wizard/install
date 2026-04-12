@@ -1,0 +1,153 @@
+[
+    {
+        "stepTitle": "欢迎使用 QwenPaw",
+        "items": [
+            {
+                "type": "tips",
+                "helpText": "QwenPaw 是一款个人助理型产品，支持多通道对话（钉钉、飞书、QQ、Discord、iMessage）、定时执行任务，能力由 Skills 决定且可无限扩展。"
+            },
+            {
+                "type": "tips",
+                "helpText": "数据全在本地，不依赖第三方托管，由 AgentScope 团队基于 AgentScope、AgentScope Runtime 与 ReMe 构建。"
+            },
+            {
+                "type": "tips",
+                "helpText": "请阅读 <a target=\"_blank\" href=\"https://github.com/agentscope-ai/QwenPaw\">项目主页</a> 了解更多信息。"
+            }
+        ]
+    },
+    {
+        "stepTitle": "QwenPaw 安装注意事项",
+        "items": [
+            {
+                "type": "tips",
+                "helpText": "1. 安装过程中会自动配置内置的 Ollama 驱动及PlayWright，<b>进度条可能会在 55% 左右停留较长时间</b>，请耐心等待。"
+            },
+            {
+                "type": "tips",
+                "helpText": "2. 如果需要使用内置的 Ollama 模型驱动，请先在飞牛应用商店中安装 <b>Ollama</b> 应用。"
+            },
+            {
+                "type": "tips",
+                "helpText": "3. 安装完成后，请进入 QwenPaw 的<b>模型设置页面</b>，将 Ollama 的基础 URL 从默认的 <b>http://localhost:11434/v1</b> 修改为 <b>http://localhost:11435/v1</b> 才能正常连接。"
+            },
+            {
+                "type": "tips",
+                "helpText": "4. 更多使用问题请加入 QQ 群 <a href='https://qun.qq.com/universal-share/share?ac=1&authKey=eh3ZjF03sS5h3xycHBkJxllqsbpz0QJTTRMVjySNNDp4W3jtafZtnrRe9t%2BrHfmZ&busi_data=eyJncm91cENvZGUiOiIxMDkxMzQ4MTkyIiwidG9rZW4iOiJUM043MmdJbytIWTlndCtkaWgyV2pUQTgyeXh1YzVMR21SZGxEUjJuVHRjVW1WYTE3d3B1ODI4c28rSjdUQy9LIiwidWluIjoiODE1MjIzNTgifQ%3D%3D&data=zc5hDTqOp2xm6e7x-U_2Yl0KARi6A5uyvzlnyU6cfjAFK7qn4S8Zz5D9kvvSd9BlUXV7gKXlmPyfVQV2PA_IiQ&svctype=4&tempid=h5_group_info' target='_blank'>1091348192</a> 进行交流。"
+            }
+        ]
+    },
+    {
+        "stepTitle": "安装源设置",
+        "items": [
+            {
+                "type": "tips",
+                "helpText": "选择 PyPI 安装源，如果您的网络环境连接官方源较慢，建议选择清华源。"
+            },
+            {
+                "type": "select",
+                "field": "wizard_pypi_mirror",
+                "label": "PyPI 安装源",
+                "initValue": "official",
+                "options": [
+                    {
+                        "label": "PyPI 官方源 (国内用户推荐使用其他镜像源)",
+                        "value": "official"
+                    },
+                    {
+                        "label": "清华大学镜像源",
+                        "value": "tsinghua"
+                    },
+                    {
+                        "label": "阿里云镜像源",
+                        "value": "aliyun"
+                    },
+                    {
+                        "label": "中科大镜像源",
+                        "value": "ustc"
+                    }
+                ],
+                "rules": [
+                    {
+                        "required": true,
+                        "message": "请选择安装源"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "stepTitle": "日志级别",
+        "items": [
+            {
+                "type": "tips",
+                "helpText": "选择日志级别，这将影响日志输出的详细程度。"
+            },
+            {
+                "type": "select",
+                "field": "wizard_log_level",
+                "label": "日志级别",
+                "initValue": "info",
+                "options": [
+                    {
+                        "label": "Info - 常规信息 (推荐)",
+                        "value": "info"
+                    },
+                    {
+                        "label": "Debug - 调试信息",
+                        "value": "debug"
+                    },
+                    {
+                        "label": "Warning - 警告信息",
+                        "value": "warning"
+                    },
+                    {
+                        "label": "Error - 错误信息",
+                        "value": "error"
+                    }
+                ],
+                "rules": [
+                    {
+                        "required": true,
+                        "message": "请选择日志级别"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "stepTitle": "工作进程数",
+        "items": [
+            {
+                "type": "tips",
+                "helpText": "设置 QwenPaw 的工作进程数，建议根据 CPU 核心数设置。"
+            },
+            {
+                "type": "select",
+                "field": "wizard_workers",
+                "label": "工作进程数",
+                "initValue": "4",
+                "options": [
+                    {
+                        "label": "2 个进程",
+                        "value": "2"
+                    },
+                    {
+                        "label": "4 个进程 (推荐)",
+                        "value": "4"
+                    },
+                    {
+                        "label": "8 个进程",
+                        "value": "8"
+                    }
+                ],
+                "rules": [
+                    {
+                        "required": true,
+                        "message": "请选择工作进程数"
+                    }
+                ]
+            }
+        ]
+    }
+]
