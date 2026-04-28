@@ -1,21 +1,18 @@
 #!/bin/bash
 
 PYTHON_BIN="/var/apps/python312/target/bin/python3"
+CODE_DIR="${TRIM_APPDEST}/qwenpaw/code"
 WORKING_DIR="${TRIM_PKGHOME}"
 VENV_DIR="${WORKING_DIR}/venv"
 
-# 设置 HOME 为应用目录 (用于 pip 缓存等)
 export HOME="${WORKING_DIR}"
-# 设置 QWENPAW_WORKING_DIR 为配置目录 (用于 qwenpaw init)
-export QWENPAW_WORKING_DIR="${TRIM_PKGETC}/.qwenpaw"
-# 日志文件
+export QWENPAW_WORKING_DIR="${TRIM_DATA_SHARE_PATHS%%:*}/.qwenpaw"
 LOG_FILE="${TRIM_PKGVAR}/qwenpaw-install.log"
 
 log_msg() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "${LOG_FILE}"
 }
 
-# 错误处理函数
 handle_error() {
     local exit_code=$?
     if [ "$exit_code" -eq 0 ]; then exit_code=1; fi
@@ -30,7 +27,6 @@ handle_error() {
 }
 trap 'handle_error' ERR
 
-# 确保配置目录权限正确，否则 qwenpaw init 会失败
 chown -R "${TRIM_USERNAME}:${TRIM_GROUPNAME}" "${WORKING_DIR}"
 chown -R "${TRIM_USERNAME}:${TRIM_GROUPNAME}" "${TRIM_PKGVAR}"
 chown -R "${TRIM_USERNAME}:${TRIM_GROUPNAME}" "${TRIM_PKGETC}"
@@ -57,10 +53,6 @@ log_msg "正在激活虚拟环境..."
 source "${VENV_DIR}/bin/activate"
 log_msg "虚拟环境激活成功"
 
-log_msg "正在升级虚拟环境 pip..."
-python3 -m pip install --upgrade pip
-log_msg "虚拟环境 pip 升级成功"
-
 PYPI_MIRROR="${wizard_pypi_mirror:-tsinghua}"
 PIP_OPTS=""
 
@@ -75,9 +67,15 @@ elif [ "$PYPI_MIRROR" = "ustc" ]; then
     PIP_OPTS="-i https://pypi.mirrors.ustc.edu.cn/simple/"
 fi
 
-log_msg "正在安装 QwenPaw..."
+log_msg "正在升级虚拟环境 pip..."
+python3 -m pip install --upgrade pip $PIP_OPTS
+log_msg "虚拟环境 pip 升级成功"
+
+cd "${CODE_DIR}"
+
+log_msg "正在安装 QwenPaw (源码模式)..."
 PIP_LOG=$(mktemp)
-if ! pip3 install qwenpaw $PIP_OPTS > "${PIP_LOG}" 2>&1; then
+if ! pip3 install -e . $PIP_OPTS > "${PIP_LOG}" 2>&1; then
     cat "${PIP_LOG}" >> "${LOG_FILE}"
     ERROR_MSG=$(tail -n 1 "${PIP_LOG}")
     rm -f "${PIP_LOG}"
@@ -86,45 +84,54 @@ fi
 cat "${PIP_LOG}" >> "${LOG_FILE}"
 rm -f "${PIP_LOG}"
 
-log_msg "正在安装 QwenPaw[ollama]..."
-PIP_LOG=$(mktemp)
-if ! pip3 install 'qwenpaw[ollama]' $PIP_OPTS > "${PIP_LOG}" 2>&1; then
+INSTALL_OLLAMA="${wizard_install_ollama:-true}"
+if [ "$INSTALL_OLLAMA" = "true" ]; then
+    log_msg "正在安装 Ollama 依赖..."
+    PIP_LOG=$(mktemp)
+    if ! pip3 install 'qwenpaw[ollama]' $PIP_OPTS > "${PIP_LOG}" 2>&1; then
+        cat "${PIP_LOG}" >> "${LOG_FILE}"
+        ERROR_MSG=$(tail -n 1 "${PIP_LOG}")
+        rm -f "${PIP_LOG}"
+        handle_error
+    fi
     cat "${PIP_LOG}" >> "${LOG_FILE}"
-    ERROR_MSG=$(tail -n 1 "${PIP_LOG}")
     rm -f "${PIP_LOG}"
-    handle_error
+else
+    log_msg "跳过安装 Ollama 驱动"
 fi
-cat "${PIP_LOG}" >> "${LOG_FILE}"
-rm -f "${PIP_LOG}"
 
 log_msg "正在初始化 QwenPaw..."
 echo "Yes" | python3 -m qwenpaw init --defaults
 
-log_msg "正在安装 playwright..."
-PIP_LOG=$(mktemp)
-if ! pip3 install playwright $PIP_OPTS > "${PIP_LOG}" 2>&1; then
+INSTALL_PLAYWRIGHT="${wizard_install_playwright:-true}"
+if [ "$INSTALL_PLAYWRIGHT" = "true" ]; then
+    log_msg "正在安装 playwright..."
+    PIP_LOG=$(mktemp)
+    if ! pip3 install playwright $PIP_OPTS > "${PIP_LOG}" 2>&1; then
+        cat "${PIP_LOG}" >> "${LOG_FILE}"
+        ERROR_MSG=$(tail -n 1 "${PIP_LOG}")
+        rm -f "${PIP_LOG}"
+        handle_error
+    fi
     cat "${PIP_LOG}" >> "${LOG_FILE}"
-    ERROR_MSG=$(tail -n 1 "${PIP_LOG}")
     rm -f "${PIP_LOG}"
-    handle_error
-fi
-cat "${PIP_LOG}" >> "${LOG_FILE}"
-rm -f "${PIP_LOG}"
 
-# 修改 playwright 镜像源为 npmmirror
-PATCH_SCRIPT="${TRIM_APPDEST}/qwenpaw/patch_playwright.py"
-if [ -f "${PATCH_SCRIPT}" ]; then
-    log_msg "正在修改 playwright 镜像源为 npmmirror..."
-    python3 "${PATCH_SCRIPT}"
+    PATCH_SCRIPT="${TRIM_APPDEST}/qwenpaw/patch_playwright.py"
+    if [ -f "${PATCH_SCRIPT}" ]; then
+        log_msg "正在修改 playwright 镜像源为 npmmirror..."
+        python3 "${PATCH_SCRIPT}"
+    else
+        log_msg "⚠️ 未找到 patch_playwright.py，跳过镜像源修改"
+    fi
+
+    log_msg "playwright 镜像源已修改为 npmmirror，设置权限"
+
+    log_msg "正在安装 playwright chromium 浏览器..."
+    playwright install chromium
+    log_msg "playwright chromium 浏览器安装成功"
 else
-    log_msg "⚠️ 未找到 patch_playwright.py，跳过镜像源修改"
+    log_msg "跳过安装 Playwright"
 fi
-
-log_msg "playwright 镜像源已修改为 npmmirror，设置权限"
-
-log_msg "正在安装 playwright chromium 浏览器..."
-playwright install chromium
-log_msg "playwright chromium 浏览器安装成功"
 
 chown -R "${TRIM_USERNAME}:${TRIM_GROUPNAME}" "${WORKING_DIR}"
 chown -R "${TRIM_USERNAME}:${TRIM_GROUPNAME}" "${TRIM_PKGVAR}"

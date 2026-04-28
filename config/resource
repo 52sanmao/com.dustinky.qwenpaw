@@ -8,7 +8,7 @@
                 }
             },
             {
-                "name": "com.dustinky.qwenpaw/data",
+                "name": "com.dustinky.qwenpaw.secret",
                 "permission": {
                     "rw": ["com.dustinky.qwenpaw"]
                 }

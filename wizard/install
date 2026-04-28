@@ -21,19 +21,15 @@
         "items": [
             {
                 "type": "tips",
-                "helpText": "1. 安装过程中会自动配置内置的 Ollama 驱动及PlayWright，<b>进度条可能会在 55% 左右停留较长时间</b>，请耐心等待。"
+                "helpText": "1. 如果选择安装 Playwright，<b>进度条可能会在 55% 左右停留较长时间</b>，请耐心等待。"
             },
             {
                 "type": "tips",
-                "helpText": "2. 如果需要使用内置的 Ollama 模型驱动，请先在飞牛应用商店中安装 <b>Ollama</b> 应用。"
+                "helpText": "2. 如果选择安装 Ollama 驱动，请先在飞牛应用商店中安装 <b>Ollama</b> 应用。"
             },
             {
                 "type": "tips",
-                "helpText": "3. 安装完成后，请进入 QwenPaw 的<b>模型设置页面</b>，将 Ollama 的基础 URL 从默认的 <b>http://localhost:11434/v1</b> 修改为 <b>http://localhost:11435/v1</b> 才能正常连接。"
-            },
-            {
-                "type": "tips",
-                "helpText": "4. 更多使用问题请加入 QQ 群 <a href='https://qun.qq.com/universal-share/share?ac=1&authKey=eh3ZjF03sS5h3xycHBkJxllqsbpz0QJTTRMVjySNNDp4W3jtafZtnrRe9t%2BrHfmZ&busi_data=eyJncm91cENvZGUiOiIxMDkxMzQ4MTkyIiwidG9rZW4iOiJUM043MmdJbytIWTlndCtkaWgyV2pUQTgyeXh1YzVMR21SZGxEUjJuVHRjVW1WYTE3d3B1ODI4c28rSjdUQy9LIiwidWluIjoiODE1MjIzNTgifQ%3D%3D&data=zc5hDTqOp2xm6e7x-U_2Yl0KARi6A5uyvzlnyU6cfjAFK7qn4S8Zz5D9kvvSd9BlUXV7gKXlmPyfVQV2PA_IiQ&svctype=4&tempid=h5_group_info' target='_blank'>1091348192</a> 进行交流。"
+                "helpText": "3. 更多使用问题请加入 QQ 群 <a href='https://qun.qq.com/universal-share/share?ac=1&authKey=eh3ZjF03sS5h3xycHBkJxllqsbpz0QJTTRMVjySNNDp4W3jtafZtnrRe9t%2BrHfmZ&busi_data=eyJncm91cENvZGUiOiIxMDkxMzQ4MTkyIiwidG9rZW4iOiJUM043MmdJbytIWTlndCtkaWgyV2pUQTgyeXh1YzVMR21SZGxEUjJuVHRjVW1WYTE3d3B1ODI4c28rSjdUQy9LIiwidWluIjoiODE1MjIzNTgifQ%3D%3D&data=zc5hDTqOp2xm6e7x-U_2Yl0KARi6A5uyvzlnyU6cfjAFK7qn4S8Zz5D9kvvSd9BlUXV7gKXlmPyfVQV2PA_IiQ&svctype=4&tempid=h5_group_info' target='_blank'>1091348192</a> 进行交流。"
             }
         ]
     },
@@ -48,7 +44,7 @@
                 "type": "select",
                 "field": "wizard_pypi_mirror",
                 "label": "PyPI 安装源",
-                "initValue": "official",
+                "initValue": "tsinghua",
                 "options": [
                     {
                         "label": "PyPI 官方源 (国内用户推荐使用其他镜像源)",
@@ -73,6 +69,29 @@
                         "message": "请选择安装源"
                     }
                 ]
+            }
+        ]
+    },
+    {
+        "stepTitle": "可选组件",
+        "items": [
+            {
+                "type": "tips",
+                "helpText": "选择需要安装的可选组件。如果您不需要使用本地 Ollama 模型或浏览器自动化功能，可以跳过安装以节省时间。"
+            },
+            {
+                "type": "switch",
+                "field": "wizard_install_ollama",
+                "label": "安装 Ollama 驱动",
+                "initValue": "true",
+                "helpText": "安装 Ollama 驱动以支持本地大语言模型。需要先安装飞牛应用商店中的 Ollama 应用。"
+            },
+            {
+                "type": "switch",
+                "field": "wizard_install_playwright",
+                "label": "安装 Playwright",
+                "initValue": "true",
+                "helpText": "安装 Playwright 浏览器自动化工具，用于网页抓取等 Skills 功能。安装时间较长。"
             }
         ]
     },

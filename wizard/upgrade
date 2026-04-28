@@ -14,7 +14,7 @@
                 "type": "select",
                 "field": "wizard_pypi_mirror",
                 "label": "PyPI 安装源",
-                "initValue": "official",
+                "initValue": "tsinghua",
                 "options": [
                     {
                         "label": "PyPI 官方源 (国内用户推荐使用其他镜像源)",
