@@ -8,16 +8,6 @@ read_when:
 
 Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
 
-### Python Virtual Environment
-
-**IMPORTANT:** All Python commands run in a virtual environment. Always activate it first:
-
-```bash
-source /var/apps/com.dustinky.qwenpaw/home/venv/bin/activate
-```
-
-After activation, use `python3` or `pip3` directly. The virtual environment is already configured with all required dependencies.
-
 ### What Goes Here
 
 Add whatever helps you do your job. This is your cheat sheet.
