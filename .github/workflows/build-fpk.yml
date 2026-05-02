@@ -32,14 +32,18 @@ jobs:
 
           echo "Building ${FPK_NAME}..."
 
-          # Create the fpk package (tar.gz)
-          # Exclude .git, .github, and other non-essential files
-          tar czf "${FPK_NAME}" \
-            --exclude='.git' \
-            --exclude='.github' \
-            --exclude='.gitignore' \
-            --exclude='*.fpk' \
-            .
+          # Copy files to temp directory to avoid "file changed as we read it" errors
+          TEMP_DIR=$(mktemp -d)
+          cp -r . "$TEMP_DIR/"
+
+          # Remove non-essential files from temp copy
+          rm -rf "$TEMP_DIR/.git" "$TEMP_DIR/.github" "$TEMP_DIR/.gitignore"
+
+          # Create the fpk package (tar.gz) from temp directory
+          tar czf "${FPK_NAME}" -C "$TEMP_DIR" .
+
+          # Cleanup temp directory
+          rm -rf "$TEMP_DIR"
 
           echo "FPK package built: ${FPK_NAME}"
           ls -lh "${FPK_NAME}"
