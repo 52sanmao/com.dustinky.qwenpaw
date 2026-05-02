@@ -28,27 +28,50 @@ jobs:
       - name: Build FPK package
         run: |
           VERSION=${{ steps.version.outputs.version }}
-          FPK_NAME="com.dustinky.qwenpaw-${VERSION}.fpk"
+          FPK_NAME="com.dustinky.qwenpaw_x86_64_v${VERSION}.fpk"
 
           echo "Building ${FPK_NAME}..."
 
-          # Copy files to temp directory to avoid "file changed as we read it" errors
-          TEMP_DIR=$(mktemp -d)
-          cp -r . "$TEMP_DIR/"
+          # Create staging directory
+          STAGING_DIR=$(mktemp -d)
 
-          # Remove non-essential files from temp copy
-          rm -rf "$TEMP_DIR/.git" "$TEMP_DIR/.github" "$TEMP_DIR/.gitignore"
+          # Copy base files
+          cp manifest "$STAGING_DIR/"
+          cp LICENSE "$STAGING_DIR/"
 
-          # Create the fpk package (tar.gz) from temp directory
-          tar czf "${FPK_NAME}" -C "$TEMP_DIR" .
+          # Copy ICON files with uppercase extensions
+          cp ICON.png "$STAGING_DIR/ICON.PNG"
+          cp ICON_256.png "$STAGING_DIR/ICON_256.PNG"
 
-          # Cleanup temp directory
-          rm -rf "$TEMP_DIR"
+          # Copy cmd, config, wizard directories
+          cp -r cmd "$STAGING_DIR/"
+          cp -r config "$STAGING_DIR/"
+          cp -r wizard "$STAGING_DIR/"
+
+          # Create app.tgz from app directory
+          tar czf "$STAGING_DIR/app.tgz" app/
+
+          # Calculate checksum (MD5 of app.tgz)
+          CHECKSUM=$(md5sum "$STAGING_DIR/app.tgz" | awk '{print $1}')
+          echo "Checksum: $CHECKSUM"
+
+          # Add checksum to manifest if not present
+          if ! grep -q "^checksum" "$STAGING_DIR/manifest"; then
+            echo "checksum                   = $CHECKSUM" >> "$STAGING_DIR/manifest"
+          else
+            sed -i "s/^checksum.*/checksum                   = $CHECKSUM/" "$STAGING_DIR/manifest"
+          fi
+
+          # Create the fpk package (tar.gz)
+          tar czf "${FPK_NAME}" -C "$STAGING_DIR" .
+
+          # Cleanup staging directory
+          rm -rf "$STAGING_DIR"
 
           echo "FPK package built: ${FPK_NAME}"
           ls -lh "${FPK_NAME}"
 
-          # Generate checksum
+          # Generate checksum file for GitHub
           sha256sum "${FPK_NAME}" > "${FPK_NAME}.sha256"
           cat "${FPK_NAME}.sha256"
 
